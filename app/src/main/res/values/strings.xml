@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Lesson24</string>
+
+    <string name="comments">Комментарии</string>
+    <string name="text_no_comment">This post haven\'t comment</string>
+    <string name="txt_no_post">This database haven\'t post</string>
+</resources>
