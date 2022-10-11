@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lesson24.databinding.ItemCommentBinding
-import com.example.lesson24.models.Comment
+import com.example.lesson24.models.CommentInfo
 
 class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
-    private var commentList = ArrayList<Comment>()
+    private var commentList = ArrayList<CommentInfo>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding = ItemCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,7 +23,7 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
         return commentList.size
     }
 
-    fun setListComment(listComment: ArrayList<Comment>) {
+    fun setListComment(listComment: ArrayList<CommentInfo>) {
         commentList = listComment
         notifyDataSetChanged()
     }
@@ -32,9 +32,9 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() 
         private val binding: ItemCommentBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(commentItem: Comment) {
-            binding.email.text = commentItem.safeEmail
-            binding.text.text = commentItem.safeText
+        fun bind(commentItem: CommentInfo) {
+            binding.email.text = commentItem.email
+            binding.text.text = commentItem.text
         }
     }
 }

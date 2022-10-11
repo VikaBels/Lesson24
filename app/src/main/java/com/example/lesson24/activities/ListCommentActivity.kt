@@ -4,7 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.lesson24.repositories.CursorRepository
+import com.example.lesson24.App.Companion.getDb
+import com.example.lesson24.repositories.DataRepository
 import com.example.lesson24.activities.DetailPostActivity.Companion.KEY_SEND_ID_POST
 import com.example.lesson24.adapters.CommentAdapter
 import com.example.lesson24.databinding.ActivityListCommentBinding
@@ -32,7 +33,7 @@ class ListCommentActivity : AppCompatActivity() {
     }
 
     private fun fillingListComment() {
-        val listComment = CursorRepository().getAllComment(getIdCurrentPost())
+        val listComment = DataRepository(getDb()).getAllComment(getIdCurrentPost())
 
         if (listComment.isEmpty()) {
             changeVisibility()

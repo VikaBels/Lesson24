@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lesson24.databinding.ItemBinding
-import com.example.lesson24.models.Post
+import com.example.lesson24.models.PostInfo
 import com.example.lesson24.listeners.PostListener
 
 class PostAdapter(
     private val postListener: PostListener,
 ) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
-    private var postList = ArrayList<Post>()
+    private var postList = ArrayList<PostInfo>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -26,7 +26,7 @@ class PostAdapter(
         return postList.size
     }
 
-    fun setListItems(listPost: ArrayList<Post>) {
+    fun setListItems(listPost: ArrayList<PostInfo>) {
         postList = listPost
         notifyDataSetChanged()
     }
@@ -36,13 +36,13 @@ class PostAdapter(
         private val listener: PostListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(postItem: Post) {
-            binding.title.text = postItem.safeTitle
-            binding.email.text = postItem.safeEmail
-            binding.body.text = postItem.safeBody
+        fun bind(postItem: PostInfo) {
+            binding.title.text = postItem.title
+            binding.email.text = postItem.email
+            binding.body.text = postItem.body
 
             binding.oneItem.setOnClickListener {
-                listener.startPostDetailActivity(postItem)
+                listener.onClickPost(postItem)
             }
         }
     }

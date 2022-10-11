@@ -1,8 +1,8 @@
 package com.example.lesson24.listeners
 
-import com.example.lesson24.models.Post
+import com.example.lesson24.models.PostInfo
 
 interface PostListener {
 
-    fun startPostDetailActivity(postItem: Post)
+    fun onClickPost(postItem: PostInfo)
 }

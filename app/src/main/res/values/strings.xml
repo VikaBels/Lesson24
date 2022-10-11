@@ -4,4 +4,5 @@
     <string name="comments">Комментарии</string>
     <string name="text_no_comment">This post haven\'t comment</string>
     <string name="txt_no_post">This database haven\'t post</string>
+    <string name="txt_no_info_about_post">No info about post</string>
 </resources>

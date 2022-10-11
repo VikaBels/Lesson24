@@ -3,9 +3,10 @@ package com.example.lesson24.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.view.isVisible
 import com.example.lesson24.activities.MainActivity.Companion.KEY_SEND_POST
 import com.example.lesson24.databinding.ActivityDetailPostBinding
-import com.example.lesson24.models.Post
+import com.example.lesson24.models.PostInfo
 
 class DetailPostActivity : AppCompatActivity() {
     companion object {
@@ -13,7 +14,6 @@ class DetailPostActivity : AppCompatActivity() {
     }
 
     private var bindingDetailPost: ActivityDetailPostBinding? = null
-    private var itemPost: Post? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,11 +23,7 @@ class DetailPostActivity : AppCompatActivity() {
 
         this.bindingDetailPost = bindingDetailPost
 
-        readObjectPost()
-
-        setupListeners(bindingDetailPost)
-
-        setDetailPost(bindingDetailPost)
+        checkItemPost(bindingDetailPost, readObjectPost())
     }
 
     override fun onDestroy() {
@@ -35,26 +31,39 @@ class DetailPostActivity : AppCompatActivity() {
         bindingDetailPost = null
     }
 
-    private fun readObjectPost() {
-        itemPost = intent.extras?.getParcelable(KEY_SEND_POST)
-    }
-
-    private fun setupListeners(bindingDetailPost: ActivityDetailPostBinding) {
-        bindingDetailPost.buttonComments.setOnClickListener {
-            startListCommentActivity()
+    private fun checkItemPost(bindingDetailPost: ActivityDetailPostBinding, itemPost: PostInfo?) {
+        if (itemPost != null) {
+            setDetailPost(bindingDetailPost, itemPost)
+            setupListeners(bindingDetailPost, itemPost.id)
+        } else {
+            changeVisibility(bindingDetailPost)
         }
     }
 
-    private fun startListCommentActivity() {
+    private fun readObjectPost(): PostInfo? {
+        return intent.extras?.getParcelable(KEY_SEND_POST)
+    }
+
+    private fun setDetailPost(bindingDetailPost: ActivityDetailPostBinding, itemPost: PostInfo) {
+        bindingDetailPost.name.text = itemPost.fullName
+        bindingDetailPost.email.text = itemPost.email
+        bindingDetailPost.title.text = itemPost.title
+        bindingDetailPost.body.text = itemPost.body
+    }
+
+    private fun setupListeners(bindingDetailPost: ActivityDetailPostBinding, id: Long) {
+        bindingDetailPost.buttonComments.setOnClickListener {
+            startListCommentActivity(id)
+        }
+    }
+
+    private fun startListCommentActivity(id: Long) {
         val intent = Intent(this, ListCommentActivity::class.java)
-        intent.putExtra(KEY_SEND_ID_POST, itemPost?.safeId)
+        intent.putExtra(KEY_SEND_ID_POST, id)
         startActivity(intent)
     }
 
-    private fun setDetailPost(bindingDetailPost: ActivityDetailPostBinding) {
-        bindingDetailPost.name.text = itemPost?.safeFullName
-        bindingDetailPost.email.text = itemPost?.safeEmail
-        bindingDetailPost.title.text = itemPost?.safeTitle
-        bindingDetailPost.body.text = itemPost?.safeBody
+    private fun changeVisibility(bindingDetailPost: ActivityDetailPostBinding) {
+        bindingDetailPost.noInfo.isVisible = true
     }
 }

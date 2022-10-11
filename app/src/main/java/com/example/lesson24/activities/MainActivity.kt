@@ -5,11 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.lesson24.repositories.CursorRepository
+import com.example.lesson24.App.Companion.getDb
+import com.example.lesson24.repositories.DataRepository
 import com.example.lesson24.adapters.PostAdapter
 import com.example.lesson24.databinding.ActivityMainBinding
 import com.example.lesson24.listeners.PostListener
-import com.example.lesson24.models.Post
+import com.example.lesson24.models.PostInfo
 
 class MainActivity : AppCompatActivity(), PostListener {
     companion object {
@@ -39,14 +40,25 @@ class MainActivity : AppCompatActivity(), PostListener {
         postAdapter = null
     }
 
-    override fun startPostDetailActivity(postItem: Post) {
+    override fun onClickPost(postItem: PostInfo) {
+        startDetailPostActivity(postItem)
+    }
+
+    private fun startDetailPostActivity(postItem: PostInfo) {
         val intent = Intent(this, DetailPostActivity::class.java)
         intent.putExtra(KEY_SEND_POST, postItem)
         startActivity(intent)
     }
 
+    private fun setUpAdapter() {
+        bindingMain?.listPost?.apply {
+            adapter = postAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
+    }
+
     private fun fillingListPost() {
-        val listPost = CursorRepository().getAllPosts()
+        val listPost = DataRepository(getDb()).getAllPosts()
 
         if (listPost.isEmpty()) {
             changeVisibility()
@@ -58,12 +70,5 @@ class MainActivity : AppCompatActivity(), PostListener {
     private fun changeVisibility() {
         bindingMain?.textNoComment?.isVisible = true
         bindingMain?.listPost?.isVisible = false
-    }
-
-    private fun setUpAdapter() {
-        bindingMain?.listPost?.apply {
-            adapter = postAdapter
-            layoutManager = LinearLayoutManager(context)
-        }
     }
 }

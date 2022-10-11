@@ -1,11 +1,11 @@
 package com.example.lesson24.repositories
 
-import com.example.lesson24.App.Companion.getDb
-import com.example.lesson24.models.Comment
-import com.example.lesson24.models.Post
+import android.database.sqlite.SQLiteDatabase
+import com.example.lesson24.models.CommentInfo
+import com.example.lesson24.models.PostInfo
 import java.util.*
 
-class CursorRepository {
+class DataRepository(private val db: SQLiteDatabase) {
     companion object {
         private const val POST_ID = "post_id"
         private const val TITLE = "title"
@@ -17,17 +17,17 @@ class CursorRepository {
         private const val TEXT_COMMENT = "text_comment"
     }
 
-    fun getAllPosts(): ArrayList<Post> {
-        val listPost = ArrayList<Post>()
+    fun getAllPosts(): ArrayList<PostInfo> {
+        val listPost = ArrayList<PostInfo>()
 
-        val cursor = getDb().rawQuery(
+        val cursor = db.rawQuery(
             "SELECT p._id as $POST_ID, p.title as $TITLE, p.body as $BODY, " +
                     "u.email as $USER_EMAIL, u.first_name || \" \" || u.last_name as $FULL_NAME FROM user u " +
                     "JOIN post p ON u._id = p.user_id",
             null
         )
 
-        if (cursor != null) {
+        cursor?.use {
             if (cursor.moveToFirst()) {
                 val idPostCursor = cursor.getColumnIndexOrThrow(POST_ID)
 
@@ -37,7 +37,7 @@ class CursorRepository {
                 val fullNameCursor = cursor.getColumnIndexOrThrow(FULL_NAME)
 
                 do {
-                    val post = Post(
+                    val post = PostInfo(
                         cursor.getLong(idPostCursor),
                         cursor.getString(titleCursor),
                         cursor.getString(userIdCursor),
@@ -49,15 +49,14 @@ class CursorRepository {
 
                 } while (cursor.moveToNext())
             }
-            cursor.close()
         }
         return listPost
     }
 
-    fun getAllComment(idCurrentPost: Long?): ArrayList<Comment> {
-        val listComment = ArrayList<Comment>()
+    fun getAllComment(idCurrentPost: Long?): ArrayList<CommentInfo> {
+        val listComment = ArrayList<CommentInfo>()
 
-        val cursor = getDb().rawQuery(
+        val cursor = db.rawQuery(
             "SELECT u.email as $EMAIL_COMMENTATOR," +
                     "c.text as $TEXT_COMMENT FROM comment c " +
                     "JOIN post p ON c.post_id = p._id " +
@@ -68,13 +67,13 @@ class CursorRepository {
             )
         )
 
-        if (cursor != null) {
+        cursor?.use {
             if (cursor.moveToFirst()) {
                 val emailCommentatorCursor = cursor.getColumnIndexOrThrow(EMAIL_COMMENTATOR)
                 val textCommentCursor = cursor.getColumnIndexOrThrow(TEXT_COMMENT)
 
                 do {
-                    val comment = Comment(
+                    val comment = CommentInfo(
                         cursor.getString(emailCommentatorCursor),
                         cursor.getString(textCommentCursor),
                     )
@@ -83,7 +82,6 @@ class CursorRepository {
 
                 } while (cursor.moveToNext())
             }
-            cursor.close()
         }
         return listComment
     }
